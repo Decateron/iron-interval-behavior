@@ -1,4 +1,4 @@
 iron-interval-behavior
 ==========
 
-`Polymer.IronIntervalBehavior` provides the behavior for an interval with a minimum and maximum value.
+`Polymer.IronIntervalBehavior` provides the behavior for an interval within a minimum to maximum range.
