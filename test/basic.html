@@ -11,14 +11,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>iron-range-behavior</title>
+  <title>iron-interval-behavior</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
-  <link rel="import" href="../iron-range-behavior.html">
+  <link rel="import" href="../iron-interval-behavior.html">
   <link rel="import" href="../../test-fixture/test-fixture.html">
 </head>
 <body>
@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'x-progressbar',
 
-      behaviors: [Polymer.IronRangeBehavior]
+      behaviors: [Polymer.IronIntervalBehavior]
     });
   </script>
 
@@ -48,17 +48,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('check default', function() {
         assert.equal(range.min, 0);
         assert.equal(range.max, 100);
-        assert.equal(range.value, 0);
+        assert.equal(range.valueA, 0);
+        assert.equal(range.valueB, 100);
+        assert.equal(range.minValue, 0);
+        assert.equal(range.maxValue, 100);
       });
 
-      test('set value', function(done) {
-        range.value = 50;
+      test('set value a', function(done) {
+        range.min = 0;
+        range.max = 60;
+        range.valueA = 50;
         asyncPlatformFlush(function() {
-          assert.equal(range.value, 50);
+          assert.equal(range.valueA, 50);
           // test clamp value
-          range.value = 60.1;
+          range.valueA = 60.1;
           asyncPlatformFlush(function() {
-            assert.equal(range.value, 60);
+            assert.equal(range.valueA, 60);
+            done();
+          });
+        });
+      });
+
+      test('set value b', function(done) {
+        range.min = 0;
+        range.max = 60;
+        range.valueB = 50;
+        asyncPlatformFlush(function() {
+          assert.equal(range.valueB, 50);
+          // test clamp value
+          range.valueB = 60.1;
+          asyncPlatformFlush(function() {
+            assert.equal(range.valueB, 60);
+            done();
+          });
+        });
+      });
+
+      test('set min', function(done) {
+        range.min = 10
+        range.max = 50;
+        range.valueA = 30;
+        range.valueB = 50;
+        asyncPlatformFlush(function() {
+          assert.equal(range.minRatio, 50);
+          assert.equal(range.maxRatio, 100);
+          range.valueA = 0;
+          asyncPlatformFlush(function() {
+            assert.equal(range.valueA, range.min);
+            assert.equal(range.minValue, range.min);
             done();
           });
         });
@@ -66,46 +103,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       test('set max', function(done) {
         range.max = 10;
-        range.value = 11;
+        range.valueA = 11;
+        range.valueB = 11;
         asyncPlatformFlush(function() {
-          assert.equal(range.value, range.max);
+          assert.equal(range.valueA, range.max);
+          assert.equal(range.valueB, range.max);
+          assert.equal(range.minValue, range.max);
+          assert.equal(range.maxValue, range.max);
           done();
         });
       });
 
       test('test ratio', function(done) {
         range.max = 10;
-        range.value = 5;
+        range.valueA = 5;
+        range.valueB = 6;
         asyncPlatformFlush(function() {
-          assert.equal(range.ratio, 50);
+          assert.equal(range.ratioA, 50);
+          assert.equal(range.ratioB, 60);
+          assert.equal(range.minRatio, 50);
+          assert.equal(range.maxRatio, 60);
           done();
-        });
-      });
-
-      test('set min', function(done) {
-        range.min = 10
-        range.max = 50;
-        range.value = 30;
-        asyncPlatformFlush(function() {
-          assert.equal(range.ratio, 50);
-          range.value = 0;
-          asyncPlatformFlush(function() {
-            assert.equal(range.value, range.min);
-            done();
-          });
         });
       });
 
       test('set step', function(done) {
         range.min = 0;
         range.max = 10;
-        range.value = 5.1;
+        range.valueA = 5.1;
         asyncPlatformFlush(function() {
-          assert.equal(range.value, 5);
+          assert.equal(range.valueA, 5);
           range.step = 0.1;
-          range.value = 5.1;
+          range.valueA = 5.1;
           asyncPlatformFlush(function() {
-            assert.equal(range.value, 5.1);
+            assert.equal(range.valueA, 5.1);
             done();
           });
         });

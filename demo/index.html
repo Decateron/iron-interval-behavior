@@ -10,11 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!doctype html>
 <html>
   <head>
-    <title>iron-range-behavior demo</title>
+    <title>iron-interval-behavior demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../iron-range-behavior.html">
+    <link rel="import" href="../iron-interval-behavior.html">
     <link rel="import" href="../../iron-input/iron-input.html">
     
     <style>
@@ -46,14 +46,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         
         .progress-value {
-          padding: 0 8px;
           font-size: 18px;
           color: #fff;
+          text-align: center;
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
         }
+
       </style>
       <template>
-        <div class="progress" horizontal center layout style$="{{_computeStyle(ratio)}}">
-          <div class="progress-value"><span>{{ratio}}</span>%</div>
+        <div class="progress" horizontal center layout style$="{{_computeStyle(minRatio, maxRatio)}}">
+          <div class="progress-value" center><span>{{minRatio}}</span>% to <span>{{maxRatio}}</span>%</div>
         </div>
       </template>
     </dom-module>
@@ -62,15 +66,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'x-progressbar',
 
-        behaviors: [Polymer.IronRangeBehavior],
+        behaviors: [Polymer.IronIntervalBehavior],
 
-        _computeStyle: function(ratio) {
-          return 'width: ' + ratio + '%;';
+        _computeStyle: function(minRatio, maxRatio) {
+          return 'width: ' + (maxRatio - minRatio) + '%; margin-left: ' + minRatio + '%;';
         }
       });
     </script>
 
-    <x-progressbar min="0" max="200" value="120"></x-progressbar>
+    <x-progressbar min="0" max="200" value-a="150" value-b="50"></x-progressbar>
 
   </body>
 </html>

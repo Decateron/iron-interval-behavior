@@ -1,0 +1,170 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+
+ /** 
+ * `iron-interval-behavior` provides a behavior for an interval with a minimum and maximum value.
+ *
+ * @demo demo/index.html
+ * @polymerBehavior 
+ */
+ Polymer.IronIntervalBehavior = {
+
+  properties: {
+
+    /**
+     * A number that represents a bound of the interval.
+     */
+    valueA: {
+      type: Number,
+      value: 0,
+      notify: true,
+      reflectToAttribute: true
+    },
+
+    /**
+     * A number that represents a bound of the interval.
+     */
+    valueB: {
+      type: Number,
+      value: 100,
+      notify: true,
+      reflectToAttribute: true
+    },
+
+    /**
+     * The ratio of valueA, a number ranging between 0-100.
+     */
+    ratioA: {
+      type: Number,
+      value: 0,
+      readOnly: true,
+      notify: true
+    },
+
+    /**
+     * The ratio of valueB, a number ranging between 0-100.
+     */
+    ratioB: {
+      type: Number,
+      value: 100,
+      readOnly: true,
+      notify: true
+    },
+
+    /**
+     * The number that indicates the minimum value of the range.
+     */
+    min: {
+      type: Number,
+      value: 0,
+      notify: true
+    },
+
+    /**
+     * The number that indicates the maximum value of the range.
+     */
+    max: {
+      type: Number,
+      value: 100,
+      notify: true
+    },
+
+    /**
+     * Specifies the value granularity of the range's value.
+     */
+    step: {
+      type: Number,
+      value: 1,
+      notify: true
+    },
+
+    /**
+     * The minimum of the two values, valueA and valueB.
+     */
+    minValue: {
+      type: Number,
+      value: 0,
+      readOnly: true,
+      notify: true
+    },
+
+    /**
+     * The maximum of the two values, valueA and valueB.
+     */
+    maxValue: {
+      type: Number,
+      value: 100,
+      readOnly: true,
+      notify: true,
+    },
+
+    /**
+     * The ratio of the minimum value, a number ranging between 0-100.
+     */
+    minRatio: {
+      type: Number,
+      value: 0,
+      readOnly: true,
+      notify: true
+    },
+
+    /**
+     * The ratio of the maximum value, a number ranging between 0-100.
+     */
+    maxRatio: {
+      type: Number,
+      value: 100,
+      readOnly: true,
+      notify: true
+    },
+  },
+
+  observers: [
+    '_update(valueA, valueB, min, max, step)'
+  ],
+
+  _calcRatio: function(value) {
+    return (this._clampValue(value) - this.min) / (this.max - this.min);
+  },
+
+  _clampValue: function(value) {
+    return Math.min(this.max, Math.max(this.min, this._calcStep(value)));
+  },
+
+  _calcStep: function(value) {
+    return this.step ? (Math.round(value / this.step) / (1 / this.step)) : value;
+  },
+
+  _validateValues: function() {
+    var vA = this._clampValue(this.valueA);
+    this.valueA = this.oldValueA = isNaN(vA) ? this.oldValueA : vA;
+
+    var vB = this._clampValue(this.valueB);
+    this.valueB = this.oldValueB = isNaN(vB) ? this.oldValueB : vB;
+
+    return this.valueA !== vA || this.valueB !== vB;
+  },
+
+  _update: function() {
+    this._validateValues();
+    this._setRatioA(this._calcRatio(this.valueA) * 100);
+    this._setRatioB(this._calcRatio(this.valueB) * 100);
+    this._setMinValue(Math.min(this.valueA, this.valueB));
+    this._setMaxValue(Math.max(this.valueA, this.valueB));
+    this._setMinRatio(this._calcRatio(this.minValue) * 100);
+    this._setMaxRatio(this._calcRatio(this.maxValue) * 100);
+  }
+
+};
+</script>
